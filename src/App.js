@@ -1,36 +1,30 @@
-
+import React, {useState, useEffect} from "react";
+import ImageCard from "./components/ImageCard"
 
 function App() {
+
+const [images,setImages] = useState([]);
+const [isLoading,setIsLoading] = useState(true)
+const [term, setTerm] = useState('');
+
+ useEffect(()=>{
+   fetch(`https://pixabay.com/api/?key=${process.env.REACT_APP_PIXABAY_API_KEY}&q=${term}&image_type=photo&pretty=true`)
+   .then(res=> res.json())
+   .then(data => {
+    setImages(data.hits);
+    setIsLoading(false)
+    console.log(data) })
+   .catch(err=> console.log(err))
+ }, []) 
   return (
+<div className="container mx-auto">
 
-<div className="max-w-sm rounded overflow-hidden shadow-lg ">
-<img src="https://source.unsplash.com/random" 
-alt="" 
-className="w-full"/>
-<div className="px-6 py-4">
-  <div className="font-bold text-purple-500 text-xl mb-2">
-    photo by Jhon doe 
+  <div className="grid grid-cols-3 gap-4">
+    {images.map(image => (
+      <ImageCard  key={image._id} image={image}/>
+    ))}
   </div>
-  <ul>
-    <li>
-    <strong>views: 4000</strong>
-    </li>
-    <li>
-    <strong>downloads: 300</strong>
-    </li>
-    <li>
-    <strong>likes: 200</strong>
-    </li>
-  </ul>
-
-</div>
-<div className="px-6 py-4">
-  <span className="inline-block bg-gray-200 rounded-full px3 py-1 text-sm font-semibold text-gray-700 mr-2">#tag1</span>
-  <span className="inline-block bg-gray-200 rounded-full px3 py-1 text-sm font-semibold text-gray-700 mr-2">#tag2</span>
-  <span className="inline-block bg-gray-200 rounded-full px3 py-1 text-sm font-semibold text-gray-700 mr-2">#tag3</span>
-</div>
 </div>
   );
 }
-
 export default App;
